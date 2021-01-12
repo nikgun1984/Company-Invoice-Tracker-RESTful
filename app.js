@@ -4,12 +4,12 @@ const express = require("express");
 const app = express();
 const ExpressError = require("./expressError");
 const companiesRouter = require("./routes/companies");
+const invoicesRouter = require("./routes/invoices");
 
 app.use(express.json());
-// const invoices = require("./routes/invoices");
 
 app.use("/companies", companiesRouter);
-// app.use("/invoices", invoices);
+app.use("/invoices", invoicesRouter);
 
 /** 404 handler */
 
