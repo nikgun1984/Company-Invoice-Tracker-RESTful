@@ -5,4 +5,8 @@ REST-ful backend API server for a simple company/invoice tracker using Express.j
 > Express.js.  
 > PostgreSQL.  
 > supertests   
-> Restful APIs
+> Restful APIs.  
+   
+## Integration Tests  
+  
+![title](test.png)
