@@ -18,6 +18,12 @@ companiesRouter.get("/:code", async (req, res, next) => {
 		const companies = await db.query(`SELECT * FROM companies WHERE code=$1`, [
 			req.params.code,
 		]);
+		if (companies.rows.length === 0) {
+			throw new ExpressError(
+				`Cannot find company with code ${req.params.code}`,
+				404
+			);
+		}
 		return res.json(companies.rows);
 	} catch (err) {
 		next(err);
@@ -31,6 +37,7 @@ companiesRouter.post("/", async (req, res, next) => {
 			`INSERT INTO companies (code,name,description) VALUES ($1,$2,$3) RETURNING code,name,description`,
 			[code, name, description]
 		);
+
 		return res.status(201).json(result.rows[0]);
 	} catch (err) {
 		return next(err);
@@ -44,6 +51,12 @@ companiesRouter.patch("/:code", async (req, res, next) => {
 			`UPDATE companies SET name=$1, description=$2 WHERE code=$3 RETURNING code,name,description`,
 			[name, description, code]
 		);
+		if (result.rows.length === 0) {
+			throw new ExpressError(
+				`Cannot update company with code ${req.params.code}`,
+				404
+			);
+		}
 		return res.status(200).json(result.rows[0]);
 	} catch (err) {
 		return next(err);

@@ -18,6 +18,12 @@ invoicesRouter.get("/:id", async (req, res, next) => {
 		const result = await db.query(`SELECT * FROM invoices WHERE id=$1`, [
 			req.params.id,
 		]);
+		if (result.rows.length === 0) {
+			throw new ExpressError(
+				`Cannot find any invoice with id ${req.params.id}`,
+				404
+			);
+		}
 		return res.status(200).json(result.rows[0]);
 	} catch (err) {
 		return next(err);
@@ -47,6 +53,12 @@ invoicesRouter.patch("/:id", async (req, res, next) => {
 			`UPDATE invoices SET comp_code=$1, amt=$2, paid=$3, add_date=$4, paid_date=$5 WHERE id = $6 RETURNING id,comp_code,amt,paid,add_date,paid_date`,
 			[comp_code, amt, paid, add_date, paid_date, req.params.id]
 		);
+		if (result.rows.length === 0) {
+			throw new ExpressError(
+				`Cannot update invoice with id ${req.params.id}`,
+				404
+			);
+		}
 		return res.status(200).json(invoice.rows[0]);
 	} catch (err) {
 		return next(err);
@@ -58,6 +70,12 @@ invoicesRouter.delete("/:id", async (req, res, next) => {
 		const invoice = db.query(`DELETE FROM invoices WHERE id=$1`, [
 			req.params.id,
 		]);
+		if (invoice.rows.length === 0) {
+			throw new ExpressError(
+				`Cannot delete invoice with id ${req.params.id}`,
+				404
+			);
+		}
 		return res.json({ message: "DELETED" });
 	} catch (err) {
 		return next(err);
