@@ -74,10 +74,10 @@ describe('POST /invoices', function () {
   });
 });
 
-describe('PATCH /invoices/:id', function () {
+describe('PUT /invoices/:id', function () {
   test("Update invoice's fields", async function () {
     const response = await request(app)
-      .patch(`/invoices/${testInvoice[0].id}`)
+      .put(`/invoices/${testInvoice[0].id}`)
       .send({
         comp_code: 'windows',
         amt: 1200,
@@ -96,7 +96,7 @@ describe('PATCH /invoices/:id', function () {
     });
   });
   test('Responds with 404 code Not Found', async function () {
-    const response = await request(app).patch(`/invoices/0`);
+    const response = await request(app).put(`/invoices/0`);
     expect(response.statusCode).toEqual(404);
   });
 });
