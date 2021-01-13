@@ -1,57 +1,58 @@
-process.env.NODE_ENV = "test";
+process.env.NODE_ENV = 'test';
 
-const request = require("supertest");
+const request = require('supertest');
 
-const app = require("../app");
-const db = require("../db");
+const app = require('../app');
+const db = require('../db');
 
 let testInvoice;
 
 beforeEach(async function () {
-	await db.query(
-		`INSERT INTO companies (code,name,description) VALUES ('windows','microsoft office','word,excel,access')`
-	);
-	let result = await db.query(
-		`INSERT INTO invoices (comp_code,amt,paid,add_date,paid_date) VALUES ('windows',1000,true,'2021-02-02T05:00:00.000Z','2021-02-02T05:00:00.000Z')`
-	);
-	testInvoice = result.rows;
-	console.log(testInvoice);
+  await db.query(
+    `INSERT INTO companies (code,name,description) VALUES ('windows','microsoft office','word,excel,access')`
+  );
+  let result = await db.query(
+    `INSERT INTO invoices (comp_code,amt,paid,add_date,paid_date) VALUES ('windows',1000,true,'2021-02-02T05:00:00.000Z','2021-02-02T05:00:00.000Z') RETURNING id,comp_code,amt,paid,add_date,paid_date`
+  );
+  testInvoice = result.rows[0];
 });
 
 afterEach(async () => {
-	await db.query("DELETE FROM companies");
-	await db.query("DELETE FROM invoices");
+  await db.query('DELETE FROM companies');
+  await db.query('DELETE FROM invoices');
 });
 
 afterAll(async () => {
-	//close db connection
-	await db.end();
+  //close db connection
+  await db.end();
 });
 
-describe("GET /invoices", function () {
-	test("Gets a list of invoices", async function () {
-		const response = await request(app).get(`/invoices`);
-		expect(response.statusCode).toEqual(200);
-		expect(response.body).toEqual([
-			{
-				id: expect.any(Number),
-				comp_code: "windows",
-				amt: 1000,
-				paid: true,
-				add_date: "2021-02-02T05:00:00.000Z",
-				paid_date: "2021-02-02T05:00:00.000Z",
-			},
-		]);
-	});
+describe('GET /invoices', function () {
+  test('Gets a list of invoices', async function () {
+    const response = await request(app).get(`/invoices`);
+    delete response.body[0].id;
+    console.log(response.body);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual([
+      {
+        comp_code: 'windows',
+        amt: 1000,
+        paid: true,
+        add_date: '2021-02-02T05:00:00.000Z',
+        paid_date: '2021-02-02T05:00:00.000Z',
+      },
+    ]);
+  });
 });
 
-describe("GET /invoices/:id", function () {
-	test("Gets a invoice", async function () {
-		console.log(testInvoice);
-		const response = await request(app).get(`/invoices/${testInvoice.id}`);
-		expect(response.statusCode).toEqual(200);
-		expect(response.body).toEqual([testInvoice]);
-	});
+describe('GET /invoices/:id', function () {
+  test('Gets a invoice', async function () {
+    console.log(testInvoice);
+    const response = await request(app).get(`/invoices/${testInvoice.id}`);
+    console.log(response.body);
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual(testInvoice);
+  });
 });
 
 // describe("POST /invoices", function () {

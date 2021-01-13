@@ -9,7 +9,7 @@ let testCompany;
 
 beforeEach(async function () {
 	let result = await db.query(
-		`INSERT INTO companies (code,name,description) VALUES ('windows','microsoft office','word,excel,access')`
+		`INSERT INTO companies (code,name,description) VALUES ('windows','microsoft office','word,excel,access') RETURNING code,name,description`
 	);
 	testCompany = result.rows[0];
 });

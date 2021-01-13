@@ -5,6 +5,7 @@ const { Client } = require("pg");
 let DB_URI;
 if (process.env.NODE_ENV === "test") {
 	DB_URI = "postgresql:///biztime_test";
+	console.log("IN HERE");
 } else {
 	DB_URI = "postgresql:///biztime";
 }
