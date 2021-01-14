@@ -9,6 +9,6 @@ REST-ful backend API server for a simple company/invoice tracker using Express.j
 > supertests  
 > Restful APIs.
 
-## Integration Tests
+## Integration Tests -- jest --coverage
 
 ![title](/images/test.png)
