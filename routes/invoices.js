@@ -33,9 +33,10 @@ invoicesRouter.get('/:id', async (req, res, next) => {
 invoicesRouter.post('/', async (req, res, next) => {
   try {
     const { comp_code, amt, paid, add_date, paid_date } = req.body;
+    const dateNow = add_date ? add_date : req.requestTime;
     const invoice = await db.query(
       `INSERT INTO invoices (comp_code,amt,paid,add_date,paid_date) VALUES($1,$2,$3,$4,$5) RETURNING comp_code,amt,paid,add_date,paid_date`,
-      [comp_code, amt, paid, add_date, paid_date]
+      [comp_code, amt, paid, dateNow, paid_date]
     );
     return res.status(201).json(invoice.rows[0]);
   } catch (err) {
@@ -45,10 +46,11 @@ invoicesRouter.post('/', async (req, res, next) => {
 
 invoicesRouter.put('/:id', async (req, res, next) => {
   try {
-    const { comp_code, amt, paid, add_date, paid_date } = req.body;
+    const { paid } = req.body;
+    const dateNow = paid ? req.requestTime : null;
     const invoice = await db.query(
-      `UPDATE invoices SET comp_code=$1, amt=$2, paid=$3, add_date=$4, paid_date=$5 WHERE id = $6 RETURNING id,comp_code,amt,paid,add_date,paid_date`,
-      [comp_code, amt, paid, add_date, paid_date, req.params.id]
+      `UPDATE invoices SET paid=$1, paid_date=$2 WHERE id = $3 RETURNING id,comp_code,amt,paid,add_date,paid_date`,
+      [paid, dateNow, req.params.id]
     );
     if (invoice.rows.length === 0) {
       throw new ExpressError(

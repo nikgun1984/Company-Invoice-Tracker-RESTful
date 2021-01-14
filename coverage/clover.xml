@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1610577905076" clover="3.2.0">
-  <project timestamp="1610577905076" name="All files">
+<coverage generated="1610578770576" clover="3.2.0">
+  <project timestamp="1610578770576" name="All files">
     <metrics statements="102" coveredstatements="90" conditionals="14" coveredconditionals="9" methods="13" coveredmethods="13" elements="129" coveredelements="112" complexity="0" loc="102" ncloc="102" packages="2" files="5" classes="5"/>
     <package name="express-biztime">
       <metrics statements="28" coveredstatements="27" conditionals="4" coveredconditionals="2" methods="3" coveredmethods="3"/>
